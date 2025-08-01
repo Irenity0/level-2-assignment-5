@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser"
 import walletRoutes from "./modules/wallet/wallet.routes"
 import authRoutes from "./modules/auth/auth.routes"
 import transactionRoutes from "./modules/transaction/transaction.routes"
+import adminRoutes from "./modules/admin/admin.routes"
 
 const app = express()
 
@@ -50,6 +51,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes)
 app.use("/api/wallet", walletRoutes)
 app.use("/api/transactions", transactionRoutes)
+app.use("/api/admin", adminRoutes)
 
 // 404 handler
 app.use("*", (req, res) => {
