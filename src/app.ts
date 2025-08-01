@@ -1,7 +1,7 @@
 import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
-
+import walletRoutes from "./modules/wallet/wallet.routes"
 import authRoutes from "./modules/auth/auth.routes"
 
 const app = express()
@@ -47,6 +47,7 @@ app.get("/", (req, res) => {
 
 // routees
 app.use("/api/auth", authRoutes)
+app.use("/api/wallet", walletRoutes)
 
 // 404 handler
 app.use("*", (req, res) => {
