@@ -2,6 +2,8 @@ import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
 
+import authRoutes from "./modules/auth/auth.routes"
+
 const app = express()
 
 app.use(
@@ -10,9 +12,21 @@ app.use(
     credentials: true,
   }),
 )
-app.use(express.json({ limit: "10mb" }))
+app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
+
+// Catch invalid JSON
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (err instanceof SyntaxError && "body" in err) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid JSON payload. Please fix your request body.",
+    })
+  }
+  next(err)
+})
+
 
 // Health check
 app.get("/health", (req, res) => {
@@ -30,6 +44,9 @@ app.get("/", (req, res) => {
     message: "Kitler wallet uwu",
   })
 })
+
+// routees
+app.use("/api/auth", authRoutes)
 
 // 404 handler
 app.use("*", (req, res) => {
