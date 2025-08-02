@@ -48,7 +48,7 @@ cp .env.example .env
 Edit `.env` file with your configuration:
 \`\`\`env
 NODE_ENV=development
-PORT=5000
+PORT=3000
 MONGODB_URI=mongodb://localhost:27017/digital-wallet
 JWT_SECRET=your-super-secret-jwt-key-here
 JWT_EXPIRES_IN=7d
@@ -82,7 +82,7 @@ npm run build
 npm start
 \`\`\`
 
-The API will be available at `http://localhost:5000`
+The API will be available at `http://localhost:3000`
 
 ## 🧪 API Testing
 
@@ -90,15 +90,15 @@ The API will be available at `http://localhost:5000`
 
 \`\`\`bash
 # Health check
-curl http://localhost:5000/health
+curl http://localhost:3000/health
 
 # Register a user
-curl -X POST http://localhost:5000/api/auth/register \
+curl -X POST http://localhost:3000/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{"name":"John Doe","email":"john@example.com","phone":"01234567890","password":"password123","role":"user"}'
 
 # Login
-curl -X POST http://localhost:5000/api/auth/login \
+curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"john@example.com","password":"password123"}'
 \`\`\`
@@ -230,7 +230,7 @@ node scripts/seed-data.js
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `NODE_ENV` | Environment mode | `development` |
-| `PORT` | Server port | `5000` |
+| `PORT` | Server port | `3000` |
 | `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/digital-wallet` |
 | `JWT_SECRET` | JWT signing secret | **Required** |
 | `JWT_EXPIRES_IN` | JWT expiration time | `7d` |

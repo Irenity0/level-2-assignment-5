@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const admin_controller_1 = require("./admin.controller");
+const auth_1 = require("../../middlewares/auth");
+const router = (0, express_1.Router)();
+router.get("/users", auth_1.authenticate, (0, auth_1.authorize)("admin"), admin_controller_1.getAllUsers);
+router.get("/wallets", auth_1.authenticate, (0, auth_1.authorize)("admin"), admin_controller_1.getAllWallets);
+router.get("/transactions", auth_1.authenticate, (0, auth_1.authorize)("admin"), admin_controller_1.getAllTransactions);
+router.patch("/wallets/:walletId/block", auth_1.authenticate, (0, auth_1.authorize)("admin"), admin_controller_1.blockWallet);
+router.patch("/wallets/:walletId/unblock", auth_1.authenticate, (0, auth_1.authorize)("admin"), admin_controller_1.unblockWallet);
+router.patch("/agents/:userId/approve", auth_1.authenticate, (0, auth_1.authorize)("admin"), admin_controller_1.approveAgent);
+router.patch("/agents/:userId/suspend", auth_1.authenticate, (0, auth_1.authorize)("admin"), admin_controller_1.suspendAgent);
+exports.default = router;
