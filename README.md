@@ -2,6 +2,9 @@
 
 A secure, modular, and role-based **backend API** for a digital wallet system built with Express.js, TypeScript, and MongoDB.
 
+### admin credentials
+email: admin@digitalwallet.com
+password: admin123
 ## 🚀 Features
 
 - **JWT-based Authentication** with role-based authorization
