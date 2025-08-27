@@ -8,9 +8,9 @@ const router = Router()
 
 // User routes
 router.get("/", authenticate, authorize("user", "agent"), getWallet)
-router.post("/add-money", authenticate, authorize("user"), validate(transactionSchema), addMoney)
-router.post("/withdraw", authenticate, authorize("user"), validate(transactionSchema), withdraw)
-router.post("/send-money", authenticate, authorize("user"), validate(transactionSchema), sendMoney)
+router.post("/add-money", authenticate, authorize("user", "agent"), validate(transactionSchema), addMoney)
+router.post("/withdraw", authenticate, authorize("user", "agent"), validate(transactionSchema), withdraw)
+router.post("/send-money", authenticate, authorize("user", "agent"), validate(transactionSchema), sendMoney)
 
 // Agent routes
 router.post("/cash-in", authenticate, authorize("agent"), validate(walletActionSchema), cashIn)

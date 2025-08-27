@@ -5,12 +5,13 @@ import walletRoutes from "./modules/wallet/wallet.routes"
 import authRoutes from "./modules/auth/auth.routes"
 import transactionRoutes from "./modules/transaction/transaction.routes"
 import adminRoutes from "./modules/admin/admin.routes"
+import userRoutes from "./modules/user/user.routes"
 
 const app = express()
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: process.env.CLIENT_URL || "http://localhost:5173" || "http://localhost:3000",
     credentials: true,
   }),
 )
@@ -51,6 +52,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes)
 app.use("/api/wallet", walletRoutes)
 app.use("/api/transactions", transactionRoutes)
+app.use("/api/user", userRoutes)
 app.use("/api/admin", adminRoutes)
 
 // 404 handler
