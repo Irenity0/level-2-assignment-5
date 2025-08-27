@@ -18,17 +18,32 @@ const getTransactionHistory = (req, res) => __awaiter(void 0, void 0, void 0, fu
         const page = Number.parseInt(req.query.page) || 1;
         const limit = Number.parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const transactions = yield transaction_model_1.Transaction.find({
-            $or: [{ initiatedBy: userId }, { fromWallet: { $exists: true } }, { toWallet: { $exists: true } }],
-        })
+        // Get filters from query
+        const { type, startDate, endDate } = req.query;
+        // Build the query
+        const query = {
+            $or: [
+                { initiatedBy: userId },
+                { "fromWallet.userId": userId },
+                { "toWallet.userId": userId },
+            ],
+        };
+        if (type)
+            query.type = type;
+        if (startDate || endDate) {
+            query.createdAt = {};
+            if (startDate)
+                query.createdAt.$gte = new Date(startDate);
+            if (endDate)
+                query.createdAt.$lte = new Date(endDate);
+        }
+        const transactions = yield transaction_model_1.Transaction.find(query)
             .populate("fromWallet", "userId")
             .populate("toWallet", "userId")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
-        const total = yield transaction_model_1.Transaction.countDocuments({
-            $or: [{ initiatedBy: userId }, { fromWallet: { $exists: true } }, { toWallet: { $exists: true } }],
-        });
+        const total = yield transaction_model_1.Transaction.countDocuments(query);
         return (0, response_1.sendResponse)(res, 200, true, "Transaction history retrieved successfully", {
             transactions,
             pagination: {
@@ -47,41 +62,30 @@ exports.getTransactionHistory = getTransactionHistory;
 const getCommissionHistory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        const agentId = req.user.id;
-        const page = Number.parseInt(req.query.page) || 1;
-        const limit = Number.parseInt(req.query.limit) || 10;
+        const agentId = req.user.id; // authenticated agent
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const transactions = yield transaction_model_1.Transaction.find({
+        // Only fetch transactions where the agent initiated the transaction AND has commission
+        const query = {
             initiatedBy: agentId,
             type: { $in: ["cash_in", "cash_out"] },
             commission: { $gt: 0 },
-        })
+        };
+        const transactions = yield transaction_model_1.Transaction.find(query)
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(limit);
-        const total = yield transaction_model_1.Transaction.countDocuments({
-            initiatedBy: agentId,
-            type: { $in: ["cash_in", "cash_out"] },
-            commission: { $gt: 0 },
-        });
-        const totalCommission = yield transaction_model_1.Transaction.aggregate([
-            {
-                $match: {
-                    initiatedBy: agentId,
-                    type: { $in: ["cash_in", "cash_out"] },
-                    commission: { $gt: 0 },
-                },
-            },
-            {
-                $group: {
-                    _id: null,
-                    totalCommission: { $sum: "$commission" },
-                },
-            },
+            .limit(limit)
+            .populate("fromWallet toWallet", "userId balance"); // optional: populate wallets
+        const total = yield transaction_model_1.Transaction.countDocuments(query);
+        const totalCommissionAgg = yield transaction_model_1.Transaction.aggregate([
+            { $match: query },
+            { $group: { _id: null, totalCommission: { $sum: "$commission" } } },
         ]);
+        const totalCommission = ((_a = totalCommissionAgg[0]) === null || _a === void 0 ? void 0 : _a.totalCommission) || 0;
         return (0, response_1.sendResponse)(res, 200, true, "Commission history retrieved successfully", {
             transactions,
-            totalCommission: ((_a = totalCommission[0]) === null || _a === void 0 ? void 0 : _a.totalCommission) || 0,
+            totalCommission,
             pagination: {
                 page,
                 limit,

@@ -10,14 +10,15 @@ const wallet_routes_1 = __importDefault(require("./modules/wallet/wallet.routes"
 const auth_routes_1 = __importDefault(require("./modules/auth/auth.routes"));
 const transaction_routes_1 = __importDefault(require("./modules/transaction/transaction.routes"));
 const admin_routes_1 = __importDefault(require("./modules/admin/admin.routes"));
+const user_routes_1 = __importDefault(require("./modules/user/user.routes"));
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
-    credentials: true,
-}));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cookie_parser_1.default)());
+app.use((0, cors_1.default)({
+    origin: process.env.CLIENT_URL || "http://localhost:5173" || "http://localhost:3000",
+    credentials: true,
+}));
 // Catch invalid JSON
 app.use((err, req, res, next) => {
     if (err instanceof SyntaxError && "body" in err) {
@@ -47,6 +48,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", auth_routes_1.default);
 app.use("/api/wallet", wallet_routes_1.default);
 app.use("/api/transactions", transaction_routes_1.default);
+app.use("/api/user", user_routes_1.default);
 app.use("/api/admin", admin_routes_1.default);
 // 404 handler
 app.use("*", (req, res) => {

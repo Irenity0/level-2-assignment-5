@@ -46,8 +46,8 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // Set cookie
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            sameSite: "none",
+            secure: true,
         });
         return (0, response_1.sendResponse)(res, 201, true, "User registered successfully", {
             user: {
@@ -92,8 +92,8 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // Set cookie
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            sameSite: "none",
+            secure: true,
         });
         return (0, response_1.sendResponse)(res, 200, true, "Login successful", {
             user: {
