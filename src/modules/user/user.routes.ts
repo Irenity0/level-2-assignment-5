@@ -5,7 +5,7 @@ import { authenticate, authorize } from "../../middlewares/auth";
 
 const router = Router();
 
-router.get("/search", authenticate, searchUserByName);
+router.get("/search", authenticate, authorize("user", "agent", "admin"), searchUserByName);
 router.put("/update", authenticate, authorize("user", "agent", "admin"), updateUserProfile);
 
 export default router;
